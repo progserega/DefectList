@@ -1,5 +1,6 @@
 package ru.drsk.progserega.defectlist;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
 import android.widget.TextView;
 
@@ -62,6 +64,20 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+    }
+    /** Called when the user clicks the Send button */
+    public void stationAddBug(View view) {
+        Log.d("stationAddBug()", "1");
+
+        // Do something in response to button
+        Intent intent = new Intent(this, addStationBug.class);
+            /*EditText editText = (EditText) findViewById(R.id.edit_message);
+            String message = editText.getText().toString();
+            intent.putExtra(EXTRA_MESSAGE, message);*/
+        Log.d("stationAddBug()", "2");
+        startActivity(intent);
+        Log.d("stationAddBug()", "3");
 
     }
 
@@ -116,11 +132,36 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
+            if (getArguments().getInt(ARG_SECTION_NUMBER)==1)
+            {
+                // Подстанции:
+                View rootView = inflater.inflate(R.layout.fragment_stations, container, false);
+                //        TextView textView = (TextView) rootView.findViewById(R.id.section_station_label);
+                //       textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                return rootView;
+            }
+            if (getArguments().getInt(ARG_SECTION_NUMBER)==2)
+            {
+                // ТП:
+                View rootView = inflater.inflate(R.layout.fragment_tp, container, false);
+                TextView textView = (TextView) rootView.findViewById(R.id.section_tp_label);
+                textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                return rootView;
+            }
+            if (getArguments().getInt(ARG_SECTION_NUMBER)==3)
+            {
+                // Опоры:
+                View rootView = inflater.inflate(R.layout.fragment_opora, container, false);
+                TextView textView = (TextView) rootView.findViewById(R.id.section_opora_label);
+                textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                return rootView;
+            }
+            return null;
+
+
         }
+
+
     }
 
     /**
@@ -150,11 +191,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Подстанции";
                 case 1:
-                    return "SECTION 2";
+                    return "ТП";
                 case 2:
-                    return "SECTION 3";
+                    return "Опоры";
             }
             return null;
         }
