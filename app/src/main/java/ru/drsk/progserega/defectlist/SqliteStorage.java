@@ -256,28 +256,12 @@ public class SqliteStorage {
     }
     protected boolean checkEmptyDb()
     {
-        Cursor cur;
-        try
-        {
-            cur = db.query("sp_tbl", new String[]{"id", "name"},null,null,null,null,null);
-            if (cur.getCount()==0)
-            {
-                Log.i("checkEmptyDb()","select return 0 records!");
-                cur.close();
-                return true;
-            }
-            else
-            {
-                Log.i("checkEmptyDb()","select return " + cur.getCount() + "records");
-                cur.close();
-                return true;
-            }
-        }
-        catch(SQLException e)
-        {
-            e.printStackTrace();
-            return true;
-        }
+        Cursor c = db.query("sp_tbl", new String[]{"id", "name"},null,null,null,null,null);
+        int count = c.getCount();
+        c.close();
+
+        Log.i("checkEmptyDb()", String.format("select return %d records!", count));
+        return count == 0;
     }
 
     protected boolean test_fill_db()
