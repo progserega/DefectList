@@ -1,9 +1,12 @@
 package ru.drsk.progserega.defectlist;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,17 +22,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
 
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity {
 
+    public SqliteStorage sqliteStorage;
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -37,11 +47,24 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /// Инициализация
+        sqliteStorage = new SqliteStorage(getApplicationContext());
+        if (!sqliteStorage.init_db())
+        {
+            Log.e("MainActivity.onCreate()", "sqliteStorage.init_db() error");
+        }
+        ////////////==============
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,8 +88,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-    /** Called when the user clicks the Send button */
+
+    /**
+     * Called when the user clicks the Send button
+     */
     public void stationAddBug(View view) {
         Log.d("stationAddBug()", "1");
 
@@ -106,6 +135,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+    /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
@@ -133,25 +198,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if (getArguments().getInt(ARG_SECTION_NUMBER)==1)
-            {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 // Подстанции:
+                Log.d("MainActivity.onCreateView()", "stations tab init");
                 View rootView = inflater.inflate(R.layout.fragment_stations, container, false);
                 //        TextView textView = (TextView) rootView.findViewById(R.id.section_station_label);
                 //       textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                // кнопку добавления ошибки делаем ненажимаемой:
+                Button station_add_bug = (Button) rootView.findViewById(R.id.station_add_bug);
+                station_add_bug.setEnabled(false);
+
                 return rootView;
             }
-            if (getArguments().getInt(ARG_SECTION_NUMBER)==2)
-            {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 // ТП:
+                Log.d("MainActivity.onCreateView()", "tp tab init");
                 View rootView = inflater.inflate(R.layout.fragment_tp, container, false);
                 TextView textView = (TextView) rootView.findViewById(R.id.section_tp_label);
                 textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                 return rootView;
             }
-            if (getArguments().getInt(ARG_SECTION_NUMBER)==3)
-            {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                 // Опоры:
+                Log.d("MainActivity.onCreateView()", "opors tab init");
                 View rootView = inflater.inflate(R.layout.fragment_opora, container, false);
                 TextView textView = (TextView) rootView.findViewById(R.id.section_opora_label);
                 textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
