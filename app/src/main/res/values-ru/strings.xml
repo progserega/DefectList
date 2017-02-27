@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Список дефектов в энергооборудовании</string>
+    <string name="action_settings" translatable="false">Настройки</string>
+    <string name="select_res_text">Выбирете РЭС</string>
+    <string name="select_sp_text">Выбирете СП</string>
+    <string name="select_station_text">Выбирете подстанцию</string>
+    <string name="station_add_bug">Добавить ошибку</string>
+    <string name="section_format">Секция %1$d пока не реализована!</string>
+</resources>

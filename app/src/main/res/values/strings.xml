@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Defect List</string>
+    <string name="select_sp_text">Select SP</string>
+    <string name="select_res_text">Select RES</string>
+    <string name="select_station_text">Select station</string>
+    <string name="station_add_bug">Add bug</string>
+    <string name="section_format">Not created! %1$d</string>
+    <string name="action_settings">Settings</string>
+</resources>
