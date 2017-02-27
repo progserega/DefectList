@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("stationAddBug()", "1");
 
         // Do something in response to button
+        //Intent intent = new Intent(this, addStationBug.class);
         Intent intent = new Intent(this, addStationBug.class);
             /*EditText editText = (EditText) findViewById(R.id.edit_message);
             String message = editText.getText().toString();
