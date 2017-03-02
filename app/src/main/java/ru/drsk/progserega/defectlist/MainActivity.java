@@ -22,13 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,11 +63,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /// Инициализация
-        sqliteStorage = new SqliteStorage(getApplicationContext());
-        if (!sqliteStorage.init_db())
+        /// Инициализация приложения:
+        // внутренняя sqlite-база:
+        sqliteStorage = SqliteStorage.getInstance(getApplicationContext());
+        if (sqliteStorage==null)
         {
-            Log.e("MainActivity.onCreate()", "sqliteStorage.init_db() error");
+            Log.e("MainActivity.onCreate()", "sqliteStorage.getInstance() error");
         }
         ////////////==============
 
@@ -207,6 +213,37 @@ public class MainActivity extends AppCompatActivity {
                 // кнопку добавления ошибки делаем ненажимаемой:
                 Button station_add_bug = (Button) rootView.findViewById(R.id.station_add_bug);
                 station_add_bug.setEnabled(false);
+
+                /// Инициализация приложения:
+                // внутренняя sqlite-база:
+                SqliteStorage sqliteStorage = SqliteStorage.getInstance(this.getContext());
+                if (sqliteStorage==null)
+                {
+                    Log.e("MainActivity.onCreate()", "sqliteStorage.getInstance() error");
+                }
+                ////////////==============
+
+                // заполнение списка СП:
+                List<String> sp=sqliteStorage.getAllSp();
+                if(sp==null)
+                {
+                    Log.e("SelectStationActivity()", "sqliteStorage.getAllSp() error");
+                    return rootView;
+                }
+                Spinner sp_spinner = (Spinner) rootView.findViewById(R.id.sp_selector);
+                // выставляем оформление и содержимое:
+                ArrayAdapter<String> sp_adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
+                        R.layout.one_row, R.id.text, sp);
+                sp_spinner.setAdapter(sp_adapter);
+
+                Spinner res_spinner = (Spinner) rootView.findViewById(R.id.res_selector);
+                Spinner station_spinner = (Spinner) rootView.findViewById(R.id.station_selector);
+                // прописываем обработчик:
+                SpinnerActivity spinnerActivity = new SpinnerActivity(rootView, sqliteStorage);
+
+                sp_spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) spinnerActivity);
+                res_spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) spinnerActivity);
+                station_spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) spinnerActivity);
 
                 return rootView;
             }

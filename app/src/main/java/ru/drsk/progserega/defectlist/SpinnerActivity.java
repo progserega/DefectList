@@ -14,11 +14,11 @@ import java.util.List;
 
 public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
-    private MainActivity StationActivity;
+    private View rootView;
     private SqliteStorage sqliteStorage;
 
-    public SpinnerActivity(MainActivity MainActivity, SqliteStorage sqlStorage) {
-        StationActivity = MainActivity;
+    public SpinnerActivity(View view, SqliteStorage sqlStorage) {
+        rootView = view;
         sqliteStorage = sqlStorage;
     }
 
@@ -27,10 +27,10 @@ public class SpinnerActivity extends Activity implements AdapterView.OnItemSelec
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
         Log.d("onItemSelected()", "text: " + parent.getItemAtPosition(pos).toString());
-        Spinner sp_spinner = (Spinner) StationActivity.findViewById(R.id.sp_selector);
-        Spinner res_spinner = (Spinner) StationActivity.findViewById(R.id.res_selector);
-        Spinner station_spinner = (Spinner) StationActivity.findViewById(R.id.station_selector);
-        Button station_add_bug = (Button) StationActivity.findViewById(R.id.station_add_bug);
+        Spinner sp_spinner = (Spinner) rootView.findViewById(R.id.sp_selector);
+        Spinner res_spinner = (Spinner) rootView.findViewById(R.id.res_selector);
+        Spinner station_spinner = (Spinner) rootView.findViewById(R.id.station_selector);
+        Button station_add_bug = (Button) rootView.findViewById(R.id.station_add_bug);
         Log.d("onItemSelected()", "text: " + parent.getItemAtPosition(pos).toString());
         if (parent.equals(sp_spinner))
         {
@@ -48,7 +48,7 @@ public class SpinnerActivity extends Activity implements AdapterView.OnItemSelec
             }
             Log.i("onItemSelected()", "size of list res: " + res.size());
 
-            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(StationActivity,
+            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(getApplicationContext(),
                     R.layout.one_row, R.id.text, res);
             res_spinner.setAdapter(res_adapter);
         }
@@ -70,7 +70,7 @@ public class SpinnerActivity extends Activity implements AdapterView.OnItemSelec
             }
             Log.d("onItemSelected()", "size of list res: " + stations.size());
 
-            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(StationActivity,
+            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(getApplicationContext(),
                     R.layout.one_row, R.id.text, stations);
             station_spinner.setAdapter(res_adapter);
 

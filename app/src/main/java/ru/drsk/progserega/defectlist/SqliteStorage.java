@@ -16,14 +16,40 @@ import java.util.List;
 
 public class SqliteStorage {
 
-    private Context context = null;
-    private StationDbHelper dbHelper = null;
-    private SQLiteDatabase db;
+    private static Context context = null;
+    private static StationDbHelper dbHelper = null;
+    private static SQLiteDatabase db;
+    private static SqliteStorage ss = null;
 
-    public SqliteStorage(Context applicationcontext) {
-        context = applicationcontext;
-        dbHelper = new StationDbHelper(context);
+    public static SqliteStorage getInstance(Context applicationcontext)
+    {
+        if (ss == null)
+        {
+            ss = new SqliteStorage();
+            ss.context = applicationcontext;
+            // Gets the data repository in write mode
+            try
+            {
+                ss.dbHelper = new StationDbHelper(context);
+                ss.db = ss.dbHelper.getWritableDatabase();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+                return null;
+            }
+            if (ss.checkEmptyDb())
+            {
+                if (!ss.test_fill_db())
+                {
+                    Log.e("init_db()", "error test_fill_db()");
+                }
+            }
+        }
+        return ss;
     }
+
+
     public List<String> getAllSp()
     {
         Cursor cur;
@@ -231,29 +257,6 @@ public class SqliteStorage {
         return res;
     }
 
-    public boolean init_db()
-    {
-        // Gets the data repository in write mode
-        try
-        {
-            db = dbHelper.getWritableDatabase();
-        }
-        catch(SQLException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-        // TODO if empty db:
-        //if (checkEmptyDb())
-        if (true)
-        {
-            if (!test_fill_db())
-            {
-                Log.e("init_db()", "error test_fill_db()");
-            }
-        }
-        return true;
-    }
     protected boolean checkEmptyDb()
     {
         Cursor c = db.query("sp_tbl", new String[]{"id", "name"},null,null,null,null,null);
