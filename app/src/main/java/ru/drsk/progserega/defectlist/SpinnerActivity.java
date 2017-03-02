@@ -48,7 +48,7 @@ public class SpinnerActivity extends Activity implements AdapterView.OnItemSelec
             }
             Log.i("onItemSelected()", "size of list res: " + res.size());
 
-            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(getApplicationContext(),
+            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(parent.getContext(),
                     R.layout.one_row, R.id.text, res);
             res_spinner.setAdapter(res_adapter);
         }
@@ -70,7 +70,7 @@ public class SpinnerActivity extends Activity implements AdapterView.OnItemSelec
             }
             Log.d("onItemSelected()", "size of list res: " + stations.size());
 
-            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(getApplicationContext(),
+            ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(parent.getContext(),
                     R.layout.one_row, R.id.text, stations);
             station_spinner.setAdapter(res_adapter);
 
