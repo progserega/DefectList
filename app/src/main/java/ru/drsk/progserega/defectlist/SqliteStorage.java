@@ -375,4 +375,29 @@ public class SqliteStorage {
         return true;
     }
 
+    public boolean add_station_defect(int station_id, int uniq_id, String comment)
+    {
+        // Заполняем подстанции:
+        ContentValues values = new ContentValues();
+        try
+        {
+            values.put("station_id", station_id);
+            values.put("uniq_id", uniq_id);
+            values.put("comment", comment);
+
+            long newRowId = db.insert("station_tbl", null, values);
+            if (newRowId==-1)
+            {
+                Log.e("SqliteStorage.add_station_defect()", "error insert row: " + values.toString());
+                return false;
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 }

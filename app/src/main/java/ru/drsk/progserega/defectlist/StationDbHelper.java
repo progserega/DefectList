@@ -43,6 +43,14 @@ public class StationDbHelper extends SQLiteOpenHelper {
         "name VARCHAR(255) "+
         ");";
         db.execSQL(sql);
+        // Таблица дефектов подстанций:
+        sql = "CREATE TABLE station_defect_tbl (" +
+                "id integer PRIMARY KEY NOT NULL," +
+                "station_id integer," +
+                "uniq_id integer," +
+                "comment VARCHAR(512);";
+        db.execSQL(sql);
+
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is

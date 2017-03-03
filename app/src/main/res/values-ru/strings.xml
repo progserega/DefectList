@@ -2,9 +2,13 @@
 <resources>
     <string name="app_name">Список дефектов в энергооборудовании</string>
     <string name="action_settings" translatable="false">Настройки</string>
-    <string name="select_res_text">Выбирете РЭС</string>
-    <string name="select_sp_text">Выбирете СП</string>
-    <string name="select_station_text">Выбирете подстанцию</string>
-    <string name="station_add_bug">Добавить ошибку</string>
+    <string name="select_res_text">Выбирете РЭС:</string>
+    <string name="select_sp_text">Выбирете СП:</string>
+    <string name="select_station_text">Выбирете подстанцию:</string>
+    <string name="station_add_bug">Добавить дефект</string>
     <string name="section_format">Секция %1$d пока не реализована!</string>
+    <string name="station_bug_comment_text">Коментарий:</string>
+    <string name="station_bug_comment_comment">Введите комментарий</string>
+    <string name="add_station_bug_name">Введи описание дефекта:</string>
+    <string name="station_save_bug">Сохранить дефект в базу данных</string>
 </resources>

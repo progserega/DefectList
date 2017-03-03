@@ -6,4 +6,8 @@
     <string name="station_add_bug">Add bug</string>
     <string name="section_format">Not created! %1$d</string>
     <string name="action_settings">Settings</string>
+    <string name="station_bug_comment_text">Commet</string>
+    <string name="station_bug_comment_comment">Enter comment</string>
+    <string name="add_station_bug_name">Enter defect detail:</string>
+    <string name="station_save_bug">Save defect to database!</string>
 </resources>
