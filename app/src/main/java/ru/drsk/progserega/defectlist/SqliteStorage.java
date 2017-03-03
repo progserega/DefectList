@@ -385,7 +385,7 @@ public class SqliteStorage {
             values.put("uniq_id", uniq_id);
             values.put("comment", comment);
 
-            long newRowId = db.insert("station_tbl", null, values);
+            long newRowId = db.insert("station_defect_tbl", null, values);
             if (newRowId==-1)
             {
                 Log.e("SqliteStorage.add_station_defect()", "error insert row: " + values.toString());

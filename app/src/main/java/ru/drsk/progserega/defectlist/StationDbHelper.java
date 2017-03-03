@@ -48,7 +48,7 @@ public class StationDbHelper extends SQLiteOpenHelper {
                 "id integer PRIMARY KEY NOT NULL," +
                 "station_id integer," +
                 "uniq_id integer," +
-                "comment VARCHAR(512);";
+                "comment VARCHAR(512));";
         db.execSQL(sql);
 
     }
@@ -57,6 +57,8 @@ public class StationDbHelper extends SQLiteOpenHelper {
         // to simply to discard the data and start over
         String sql;
         sql="drop table station_tbl;";
+        db.execSQL(sql);
+        sql="drop table station_defect_tbl;";
         db.execSQL(sql);
         sql="drop table sp_tbl;";
         db.execSQL(sql);
