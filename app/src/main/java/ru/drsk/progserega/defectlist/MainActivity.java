@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Spinner sp_spinner = (Spinner) rootView.findViewById(R.id.sp_selector);
                 // выставляем оформление и содержимое:
-                ArrayAdapter<String> sp_adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
+                ArrayAdapter<String> sp_adapter = new ArrayAdapter<String>(getContext(),
                         R.layout.one_row, R.id.text, sp);
                 sp_spinner.setAdapter(sp_adapter);
 

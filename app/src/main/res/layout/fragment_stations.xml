@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/sp_selector"
             android:spinnerMode="dialog"
-            android:layout_weight="1"
             android:dropDownWidth="match_parent" />
 
         <TextView
