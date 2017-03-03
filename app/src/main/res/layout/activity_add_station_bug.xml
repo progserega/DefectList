@@ -11,6 +11,7 @@
     tools:context="ru.drsk.progserega.defectlist.addStationBug">
 
     <Button
+        android:onClick="stationSaveBug"
         android:text="save bug to db!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
