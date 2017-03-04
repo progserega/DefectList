@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.e("MainActivity.onCreate()", "sqliteStorage.getInstance() error");
         }
+        Intent SyncService = new Intent(this, SyncService.class);
+        startService(SyncService);
         ////////////==============
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -10,4 +10,5 @@
     <string name="station_bug_comment_comment">Enter comment</string>
     <string name="add_station_bug_name">Enter defect detail:</string>
     <string name="station_save_bug">Save defect to database!</string>
+    <string name="sync_service_description">Service sync data to corp db</string>
 </resources>
