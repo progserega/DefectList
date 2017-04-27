@@ -25,6 +25,7 @@ import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    static Boolean syncActive=false;
     public SqliteStorage sqliteStorage;
     /**
      * The {@link PagerAdapter} that will provide
@@ -116,6 +118,41 @@ public class MainActivity extends AppCompatActivity {
         Log.d("stationAddBug()", "2");
         startActivity(intent);
         Log.d("stationAddBug()", "3");
+
+    }
+
+    /**
+     * Called when the user clicks the Send button
+     */
+    public void startSync(View view) {
+
+        Log.d("startSync()", "1");
+        if (!syncActive)
+        {
+            syncActive=true;
+            Log.d("startSync()", "Sync not active - start it");
+            Button startSyncButton = (Button) findViewById(R.id.sync_button);
+            // устанавливаем кнопку отмены:
+            startSyncButton.setText(R.string.sync_stop_button_text);
+            ProgressBar syncProgress = (ProgressBar) findViewById(R.id.progressBar);
+            syncProgress.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            syncActive=false;
+            Log.d("startSync()", "Sync active - stop it");
+            Button startSyncButton = (Button) findViewById(R.id.sync_button);
+            // устанавливаем кнопку отмены:
+            startSyncButton.setText(R.string.sync_button_text);
+            ProgressBar syncProgress = (ProgressBar) findViewById(R.id.progressBar);
+            syncProgress.setVisibility(View.INVISIBLE);
+        }
+
+
+
+            /*EditText editText = (EditText) findViewById(R.id.edit_message);
+            String message = editText.getText().toString();
+            intent.putExtra(EXTRA_MESSAGE, message);*/
 
     }
 
@@ -208,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 // Подстанции:
-                Log.d("MainActivity.onCreateView()", "stations tab init");
+                Log.d("onCreateView()", "stations tab init");
                 View rootView = inflater.inflate(R.layout.fragment_stations, container, false);
                 //        TextView textView = (TextView) rootView.findViewById(R.id.section_station_label);
                 //       textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
@@ -251,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 // ТП:
-                Log.d("MainActivity.onCreateView()", "tp tab init");
+                Log.d("onCreateView()", "tp tab init");
                 View rootView = inflater.inflate(R.layout.fragment_tp, container, false);
                 TextView textView = (TextView) rootView.findViewById(R.id.section_tp_label);
                 textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
@@ -259,12 +296,22 @@ public class MainActivity extends AppCompatActivity {
             }
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                 // Опоры:
-                Log.d("MainActivity.onCreateView()", "opors tab init");
+                Log.d("onCreateView()", "opors tab init");
                 View rootView = inflater.inflate(R.layout.fragment_opora, container, false);
                 TextView textView = (TextView) rootView.findViewById(R.id.section_opora_label);
                 textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                 return rootView;
             }
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
+                // Опоры:
+                Log.d("onCreateView()", "sync tab init");
+                View rootView = inflater.inflate(R.layout.fragment_sync, container, false);
+ /*               TextView textView = (TextView) rootView.findViewById(R.id.section_opora_label);
+                textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                */
+                return rootView;
+            }
+
             return null;
 
 
@@ -293,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -305,6 +352,8 @@ public class MainActivity extends AppCompatActivity {
                     return "ТП";
                 case 2:
                     return "Опоры";
+                case 3:
+                    return "Синхронизация";
             }
             return null;
         }

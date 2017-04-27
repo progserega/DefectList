@@ -12,4 +12,9 @@
     <string name="add_station_bug_name">Введи описание дефекта:</string>
     <string name="station_save_bug">Сохранить дефект в базу данных</string>
     <string name="sync_service_description" translatable="false">Сервис синхронизации с корпоративной базой данных</string>
+    <string name="sync_label">Синхронизация с сервером ДРСК</string>
+    <string name="sync_button_text">Запуск синхронизации</string>
+    <string name="sync_date_label">Время последней успешной синхронизации:</string>
+    <string name="no_sync">не было</string>
+    <string name="sync_stop_button_text">Остановить синхронизацию</string>
 </resources>

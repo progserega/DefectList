@@ -11,4 +11,9 @@
     <string name="add_station_bug_name">Enter defect detail:</string>
     <string name="station_save_bug">Save defect to database!</string>
     <string name="sync_service_description">Service sync data to corp db</string>
+    <string name="sync_label">Sync to server</string>
+    <string name="sync_button_text">Start sync</string>
+    <string name="sync_date_label">Sync last success date:</string>
+    <string name="no_sync">no sync</string>
+    <string name="sync_stop_button_text">Stop sync</string>
 </resources>
