@@ -1,5 +1,6 @@
 package ru.drsk.progserega.defectlist;
 
+import java.util.Calendar;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
@@ -25,6 +26,8 @@ import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -136,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             startSyncButton.setText(R.string.sync_stop_button_text);
             ProgressBar syncProgress = (ProgressBar) findViewById(R.id.progressBar);
             syncProgress.setVisibility(View.VISIBLE);
+            apiJsonSync sync = new apiJsonSync(getApplicationContext());
+            sync.syncDicts();
         }
         else
         {
@@ -149,13 +154,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-            /*EditText editText = (EditText) findViewById(R.id.edit_message);
-            String message = editText.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, message);*/
-
+        syncOkCallback();
     }
 
+    public void syncOkCallback() {
+
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int month = c.get(Calendar.MONTH);
+        int year = c.get(Calendar.YEAR);
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minutes = c.get(Calendar.MINUTE);
+        int seconds = c.get(Calendar.SECOND);
+        Log.d("syncOkCallback()", String.valueOf(c));
+        EditText dateLastSyncLabel = (EditText) findViewById(R.id.sync_date);
+        String dataString = null;
+        dataString = hour + ":" + minutes + ":" + seconds + " " + day + "." + month + "." + year;
+        Log.d("result_date_sync",dataString);
+
+        syncActive=false;
+        Log.d("startSync()", "Sync active - stop it");
+        Button startSyncButton = (Button) findViewById(R.id.sync_button);
+        // устанавливаем кнопку отмены:
+        startSyncButton.setText(R.string.sync_button_text);
+        ProgressBar syncProgress = (ProgressBar) findViewById(R.id.progressBar);
+        syncProgress.setVisibility(View.INVISIBLE);
+        dateLastSyncLabel.setText(dataString);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
