@@ -59,10 +59,6 @@ public class apiJsonSync {
 
         String url ="http://prx.rs.int/sp.json";
         syncSpFromUrl(mRequestQueue,url);
-        url ="http://prx.rs.int/res.json";
-        syncResFromUrl(mRequestQueue,url);
-        url ="http://prx.rs.int/ps.json";
-        syncPsFromUrl(mRequestQueue,url);
 
     }
 
@@ -81,6 +77,7 @@ public class apiJsonSync {
                         // TODO отобразить ошибку пользователю
                     }
                     // СП обновили успешно, пробуем обновить РЭС-ы:
+                    syncResFromUrl(mRequestQueue,"http://prx.rs.int/res.json");
                 }
             },
             new Response.ErrorListener() {
@@ -144,7 +141,8 @@ public class apiJsonSync {
                             Log.e("apiJsonSync.syncDicts()","updateSpFromJson()");
                             // TODO отобразить ошибку пользователю
                         }
-                        // СП обновили успешно, пробуем обновить РЭС-ы:
+                        // СП обновили успешно, пробуем обновить подстанции:
+                        syncPsFromUrl(mRequestQueue,"http://prx.rs.int/ps.json");
                     }
                 },
                 new Response.ErrorListener() {
