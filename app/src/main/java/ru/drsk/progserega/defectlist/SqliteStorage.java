@@ -294,6 +294,58 @@ public class SqliteStorage {
         }
         return true;
     }
+
+    public boolean add_res(int sp_id, int res_id, String name)
+    {
+        // Заполняем РЭС:
+        ContentValues values = new ContentValues();
+        try
+        {
+            values.put("id", res_id);
+            values.put("sp_id", sp_id);
+            values.put("name", name);
+            long newRowId = db.insert("res_tbl", null, values);
+            if (newRowId==-1)
+            {
+                Log.e("add_res()", "error insert row: " + values.toString());
+                return false;
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean add_ps(int sp_id, int res_id, int ps_id, int np_id, int uniq_id, String name)
+    {
+        // Заполняем подстанцию:
+        ContentValues values = new ContentValues();
+        try
+        {
+            values.put("id", ps_id);
+            values.put("sp_id", sp_id);
+            values.put("res_id", res_id);
+            values.put("np_id", np_id);
+            values.put("uniq_id", uniq_id);
+            values.put("name", name);
+            long newRowId = db.insert("station_tbl", null, values);
+            if (newRowId==-1)
+            {
+                Log.e("add_ps()", "error insert row: " + values.toString());
+                return false;
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     protected boolean test_fill_db()
     {
         dbHelper.onUpgrade(db,1,1);

@@ -47,41 +47,51 @@ public class apiJsonSync {
         // Start the queue
         mRequestQueue.start();
 
-        String sp_url ="http://prx.rs.int/sp.json";
+        String url ="http://prx.rs.int/sp.json";
+        syncSpFromUrl(mRequestQueue,url);
+        url ="http://prx.rs.int/res.json";
+        syncResFromUrl(mRequestQueue,url);
+        url ="http://prx.rs.int/ps.json";
+        syncPsFromUrl(mRequestQueue,url);
 
+    }
+
+    private boolean syncSpFromUrl(RequestQueue rq, String url)
+    {
         // Formulate the request and handle the response.
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, sp_url,
-                new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                // Do something with the response
-                Log.d("json",response);/// Инициализация приложения:
-                // внутренняя sqlite-база:
-                SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
-                if (sqliteStorage==null)
-                {
-                    Log.e("apiJsonSync.syncDicts()", "sqliteStorage.getInstance() error");
-                }
-                // очищаем базу:
-                sqliteStorage.clear_db();
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    // Do something with the response
+                  //  Log.d("json",response);/// Инициализация приложения:
+                    // внутренняя sqlite-база:
+                    SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+                    if (sqliteStorage==null)
+                    {
+                        Log.e("syncSpFromUrl()", "sqliteStorage.getInstance() error");
+                    }
+                    // очищаем базу:
+                    sqliteStorage.clear_db();
 
-                if(!updateSpFromJson(response))
-                {
-                    Log.e("apiJsonSync.syncDicts()","updateSpFromJson()");
-                    // TODO отобразить ошибку пользователю
+                    if(!updateSpFromJson(response))
+                    {
+                        Log.e("syncSpFromUrl()","updateSpFromJson()");
+                        // TODO отобразить ошибку пользователю
+                    }
+                    // СП обновили успешно, пробуем обновить РЭС-ы:
                 }
-                // СП обновили успешно, пробуем обновить РЭС-ы:
-            }
-        },
+            },
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     // Handle error
                     Log.e("json", String.valueOf(error));
-            }
+                }
         });
         // Add the request to the RequestQueue.
-        mRequestQueue.add(stringRequest);
+        rq.add(stringRequest);
+        return true;
     }
     private boolean updateSpFromJson(String response)
     {
@@ -93,7 +103,7 @@ public class apiJsonSync {
         SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
         if (sqliteStorage==null)
         {
-            Log.e("apiJsonSync.syncDicts()", "sqliteStorage.getInstance() error");
+            Log.e("updatePsFromJson()", "sqliteStorage.getInstance() error");
             return false;
         }
         try {
@@ -109,7 +119,162 @@ public class apiJsonSync {
                 Log.d("sp data from json:", "sp_id="+sp_id+" sp_name="+sp_name);
                 if(!sqliteStorage.add_sp(sp_id,sp_name))
                 {
-                    Log.e("SyncDicts:", "sqliteStorage.add_sp("+sp_id+","+sp_name);
+                    Log.e("updateSpFromJson():", "sqliteStorage.add_sp("+sp_id+","+sp_name);
+                    return false;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean syncResFromUrl(RequestQueue rq, String url)
+    {
+        // Formulate the request and handle the response.
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Do something with the response
+                       // Log.d("json",response);/// Инициализация приложения:
+                        // внутренняя sqlite-база:
+                        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+                        if (sqliteStorage==null)
+                        {
+                            Log.e("syncResFromUrl()", "sqliteStorage.getInstance() error");
+                        }
+                        // очищаем базу:
+                        sqliteStorage.clear_db();
+
+                        if(!updateResFromJson(response))
+                        {
+                            Log.e("apiJsonSync.syncDicts()","updateSpFromJson()");
+                            // TODO отобразить ошибку пользователю
+                        }
+                        // СП обновили успешно, пробуем обновить РЭС-ы:
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        Log.e("json", String.valueOf(error));
+                    }
+                });
+        // Add the request to the RequestQueue.
+        rq.add(stringRequest);
+        return true;
+    }
+    private boolean updateResFromJson(String response)
+    {
+        // parse json:
+        JSONArray sp = null;
+        JSONObject item = null;
+        //JSONArray contacts = null;
+        JSONObject contacts = null;
+        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+        if (sqliteStorage==null)
+        {
+            Log.e("updateResFromJson()", "sqliteStorage.getInstance() error");
+            return false;
+        }
+        try {
+            sp = new JSONObject(response).getJSONArray("res");
+            // get a JSONArray from inside an object
+            for (int index=0; index < sp.length(); index++)
+            {
+                int sp_id=0;
+                int res_id=0;
+                String res_name=null;
+                JSONObject sp_item = sp.getJSONObject(index);
+                res_name = sp_item.getString("name");
+                sp_id = sp_item.getInt("sp_id");
+                res_id = sp_item.getInt("res_id");
+                Log.d("res data from json:", "sp_id="+sp_id+", res_id=" + res_id + " sp_name="+res_name);
+                if(!sqliteStorage.add_res(sp_id,res_id,res_name))
+                {
+                    Log.e("updateResFromJson():", "sqliteStorage.add_res("+sp_id+","+res_id+","+res_name);
+                    return false;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean syncPsFromUrl(RequestQueue rq, String url)
+    {
+        // Formulate the request and handle the response.
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Do something with the response
+                        //Log.d("json",response);/// Инициализация приложения:
+                        // внутренняя sqlite-база:
+                        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+                        if (sqliteStorage==null)
+                        {
+                            Log.e("syncPsFromUrl()", "sqliteStorage.getInstance() error");
+                        }
+                        // очищаем базу:
+                        sqliteStorage.clear_db();
+
+                        if(!updatePsFromJson(response))
+                        {
+                            Log.e("syncPsFromUrl()","updateSpFromJson()");
+                            // TODO отобразить ошибку пользователю
+                        }
+                        // СП обновили успешно, пробуем обновить РЭС-ы:
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        Log.e("json", String.valueOf(error));
+                    }
+                });
+        // Add the request to the RequestQueue.
+        rq.add(stringRequest);
+        return true;
+    }
+    private boolean updatePsFromJson(String response)
+    {
+        // parse json:
+        JSONArray sp = null;
+        JSONObject item = null;
+        //JSONArray contacts = null;
+        JSONObject contacts = null;
+        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+        if (sqliteStorage==null)
+        {
+            Log.e("updatePsFromJson()", "sqliteStorage.getInstance() error");
+            return false;
+        }
+        try {
+            sp = new JSONObject(response).getJSONArray("ps");
+            // get a JSONArray from inside an object
+            for (int index=0; index < sp.length(); index++)
+            {
+                int sp_id=0;
+                int res_id=0;
+                int ps_id=0;
+                int uniq_id=0;
+                int np_id=0;
+                String name=null;
+                JSONObject sp_item = sp.getJSONObject(index);
+                name = sp_item.getString("name");
+                sp_id = sp_item.getInt("sp_id");
+                res_id = sp_item.getInt("res_id");
+                ps_id = sp_item.getInt("ps_id");
+                uniq_id = sp_item.getInt("ps_uniq_id");
+                Log.d("ps data from json:", "sp_id="+sp_id+", res_id=" + res_id + ", uniq_id="+uniq_id+", ps_name="+name);
+                if(!sqliteStorage.add_ps(sp_id,res_id,ps_id,np_id,uniq_id,name))
+                {
+                    Log.e("updatePsFromJson:", "sqliteStorage.add_res("+sp_id+","+res_id+","+name);
                     return false;
                 }
             }
