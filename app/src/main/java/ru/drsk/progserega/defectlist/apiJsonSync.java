@@ -16,6 +16,10 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by serega on 03.05.17.
  */
@@ -43,15 +47,30 @@ public class apiJsonSync {
         // Start the queue
         mRequestQueue.start();
 
-        String url ="http://prx.rs.int/test.json";
+        String sp_url ="http://prx.rs.int/sp.json";
 
         // Formulate the request and handle the response.
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, sp_url,
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // Do something with the response
-                Log.d("json",response);
+                Log.d("json",response);/// Инициализация приложения:
+                // внутренняя sqlite-база:
+                SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+                if (sqliteStorage==null)
+                {
+                    Log.e("apiJsonSync.syncDicts()", "sqliteStorage.getInstance() error");
+                }
+                // очищаем базу:
+                sqliteStorage.clear_db();
+
+                if(!updateSpFromJson(response))
+                {
+                    Log.e("apiJsonSync.syncDicts()","updateSpFromJson()");
+                    // TODO отобразить ошибку пользователю
+                }
+                // СП обновили успешно, пробуем обновить РЭС-ы:
             }
         },
             new Response.ErrorListener() {
@@ -61,9 +80,42 @@ public class apiJsonSync {
                     Log.e("json", String.valueOf(error));
             }
         });
-
         // Add the request to the RequestQueue.
         mRequestQueue.add(stringRequest);
-
+    }
+    private boolean updateSpFromJson(String response)
+    {
+        // parse json:
+        JSONArray sp = null;
+        JSONObject item = null;
+        //JSONArray contacts = null;
+        JSONObject contacts = null;
+        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+        if (sqliteStorage==null)
+        {
+            Log.e("apiJsonSync.syncDicts()", "sqliteStorage.getInstance() error");
+            return false;
+        }
+        try {
+            sp = new JSONObject(response).getJSONArray("sp");
+            // get a JSONArray from inside an object
+            for (int index=0; index < sp.length(); index++)
+            {
+                int sp_id=0;
+                String sp_name=null;
+                JSONObject sp_item = sp.getJSONObject(index);
+                sp_name = sp_item.getString("name");
+                sp_id = sp_item.getInt("sp_id");
+                Log.d("sp data from json:", "sp_id="+sp_id+" sp_name="+sp_name);
+                if(!sqliteStorage.add_sp(sp_id,sp_name))
+                {
+                    Log.e("SyncDicts:", "sqliteStorage.add_sp("+sp_id+","+sp_name);
+                    return false;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

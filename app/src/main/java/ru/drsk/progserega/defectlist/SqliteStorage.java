@@ -267,6 +267,33 @@ public class SqliteStorage {
         return count == 0;
     }
 
+    public void clear_db()
+    {
+        dbHelper.onUpgrade(db,1,1);
+    }
+
+    public boolean add_sp(int sp_id, String sp_name)
+    {
+        // Заполняем СП:
+        ContentValues values = new ContentValues();
+        try
+        {
+            values.put("id", sp_id);
+            values.put("name", sp_name);
+            long newRowId = db.insert("sp_tbl", null, values);
+            if (newRowId==-1)
+            {
+                Log.e("add_sp()", "error insert row: " + values.toString());
+                return false;
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     protected boolean test_fill_db()
     {
         dbHelper.onUpgrade(db,1,1);
