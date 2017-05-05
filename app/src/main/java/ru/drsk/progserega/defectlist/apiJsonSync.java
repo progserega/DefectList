@@ -47,6 +47,16 @@ public class apiJsonSync {
         // Start the queue
         mRequestQueue.start();
 
+        // внутренняя sqlite-база:
+        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
+        if (sqliteStorage==null)
+        {
+            Log.e("syncDicts()", "sqliteStorage.getInstance() error");
+        }
+        // очищаем базу:
+        assert sqliteStorage != null;
+        sqliteStorage.clear_db();
+
         String url ="http://prx.rs.int/sp.json";
         syncSpFromUrl(mRequestQueue,url);
         url ="http://prx.rs.int/res.json";
@@ -64,15 +74,6 @@ public class apiJsonSync {
                 @Override
                 public void onResponse(String response) {
                     // Do something with the response
-                  //  Log.d("json",response);/// Инициализация приложения:
-                    // внутренняя sqlite-база:
-                    SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
-                    if (sqliteStorage==null)
-                    {
-                        Log.e("syncSpFromUrl()", "sqliteStorage.getInstance() error");
-                    }
-                    // очищаем базу:
-                    sqliteStorage.clear_db();
 
                     if(!updateSpFromJson(response))
                     {
@@ -137,15 +138,6 @@ public class apiJsonSync {
                     @Override
                     public void onResponse(String response) {
                         // Do something with the response
-                       // Log.d("json",response);/// Инициализация приложения:
-                        // внутренняя sqlite-база:
-                        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
-                        if (sqliteStorage==null)
-                        {
-                            Log.e("syncResFromUrl()", "sqliteStorage.getInstance() error");
-                        }
-                        // очищаем базу:
-                        sqliteStorage.clear_db();
 
                         if(!updateResFromJson(response))
                         {
@@ -212,15 +204,6 @@ public class apiJsonSync {
                     @Override
                     public void onResponse(String response) {
                         // Do something with the response
-                        //Log.d("json",response);/// Инициализация приложения:
-                        // внутренняя sqlite-база:
-                        SqliteStorage sqliteStorage = SqliteStorage.getInstance(appContext);
-                        if (sqliteStorage==null)
-                        {
-                            Log.e("syncPsFromUrl()", "sqliteStorage.getInstance() error");
-                        }
-                        // очищаем базу:
-                        sqliteStorage.clear_db();
 
                         if(!updatePsFromJson(response))
                         {
